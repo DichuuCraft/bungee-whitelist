@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.hadroncfy.proxywhitelist.Config;
 import com.hadroncfy.proxywhitelist.ICommandSender;
+import com.hadroncfy.proxywhitelist.ILogger;
 import com.hadroncfy.proxywhitelist.IPlugin;
 import com.hadroncfy.proxywhitelist.Whitelist;
 
@@ -21,6 +22,18 @@ public class WhitelistPlugin extends Plugin implements IPlugin, Listener {
 
     private File dataPath;
     private Whitelist whitelist = new Whitelist(this);
+    private ILogger loggerImpl = new ILogger(){
+    
+        @Override
+        public void info(String msg) {
+            getLogger().info(msg);
+        }
+    
+        @Override
+        public void error(String msg) {
+            getLogger().severe(msg);
+        }
+    };
   
     @Override
     public void onEnable() {
@@ -37,7 +50,7 @@ public class WhitelistPlugin extends Plugin implements IPlugin, Listener {
         getLogger().info(msg);
         TextComponent ret = new TextComponent(msg);
         ret.setItalic(true);
-        ret.setColor(ChatColor.GREEN);
+        ret.setColor(ChatColor.DARK_RED);
         for (ProxiedPlayer player: getProxy().getPlayers()){
             player.sendMessage(ret);
         }
@@ -86,5 +99,10 @@ public class WhitelistPlugin extends Plugin implements IPlugin, Listener {
         } catch (Exception e) {
             getLogger().severe("Failed to save configuration!");
         }
+    }
+
+    @Override
+    public ILogger logger() {
+        return loggerImpl;
     }
 }

@@ -8,3 +8,8 @@
  */
 
 rootProject.name = 'bungee-whitelist'
+include(
+    'common',
+    'bungeecord',
+    'velocity'
+)

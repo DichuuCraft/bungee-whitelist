@@ -1,0 +1,4 @@
+name: BungeeWhitelist
+main: com.hadroncfy.proxywhitelist.bungeecord.WhitelistPlugin
+version: 1.0
+author: hadroncfy

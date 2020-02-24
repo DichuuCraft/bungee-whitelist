@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+repositories {
+    jcenter()
+    maven {
+        name 'velocity'
+        url 'https://repo.velocitypowered.com/snapshots/'
+    }
+}
+
+dependencies {
+    implementation project(':common')
+    implementation 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+}
+
+shadowJar {
+    archiveBaseName = 'velocity-whitelist'
+    destinationDirectory = file('out/')
+}

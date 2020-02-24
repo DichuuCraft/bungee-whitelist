@@ -1,8 +1,5 @@
 package com.hadroncfy.proxywhitelist.bungeecord;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.hadroncfy.proxywhitelist.ICommandSender;
 import com.hadroncfy.proxywhitelist.Whitelist;
 
@@ -20,42 +17,14 @@ public class WhitelistCommand extends Command implements TabExecutor {
         this.whitelist = whitelist;
     }
 
-    private static List<String> filterStart(List<String> l, String prefix){
-        List<String> ret = new ArrayList<>();
-        for (String s: l){
-            if (s.startsWith(prefix)){
-                ret.add(s);
-            }
-        }
-        return ret;
-    }
-
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        List<String> ret = new ArrayList<>();
-        if (args.length == 0 || args.length == 1){
-            ret.add("on");
-            ret.add("off");
-            ret.add("list");
-            ret.add("reload");
-            ret.add("remove");
-            ret.add("add"); 
-            if (args.length == 1){
-                ret = filterStart(ret, args[0]);
-            }
-        }
-        else if (args.length == 2){
-            if (args[1].equals("remove")){
-                ret = filterStart(whitelist.list(), args[1]);
-            }
-        }
-
-        return ret;
+        return whitelist.getWhitelistCommand().doCompletion(args);
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        whitelist.execCommand(new ICommandSender(){
+        whitelist.getWhitelistCommand().exec(new ICommandSender(){
         
             @Override
             public void sendResultMessage(String msg) {
