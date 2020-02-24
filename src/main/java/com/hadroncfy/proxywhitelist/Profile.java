@@ -1,4 +1,4 @@
-package com.hadroncfy.bungeewhitelist;
+package com.hadroncfy.proxywhitelist;
 
 import java.util.UUID;
 

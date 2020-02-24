@@ -1,4 +1,4 @@
-package com.hadroncfy.bungeewhitelist;
+package com.hadroncfy.proxywhitelist;
 
 public class WhitelistEntry {
     public String uuid, name;

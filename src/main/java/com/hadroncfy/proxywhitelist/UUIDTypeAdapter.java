@@ -1,4 +1,4 @@
-package com.hadroncfy.bungeewhitelist;
+package com.hadroncfy.proxywhitelist;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
