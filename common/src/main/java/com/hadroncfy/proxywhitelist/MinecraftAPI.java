@@ -7,12 +7,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.Charsets;
 
 public class MinecraftAPI {
     private static final String HOST = "api.mojang.com";
     private static final String UUID_ENDPOINT = "/users/profiles/minecraft/";
+    private static final Gson gson = new GsonBuilder().registerTypeAdapter(UUID.class, UUIDTypeAdapter.getInstance()).create();
 
     private static String doHttpGet(URL url) throws IOException {
         InputStream is = null;
@@ -32,14 +35,13 @@ public class MinecraftAPI {
 
     public static Profile getUUIDByName(String name) throws IOException {
         URL u = new URL("https", HOST, UUID_ENDPOINT + name);
-        Gson gson = new Gson();
+        // Gson gson = new Gson();
         String responseText = doHttpGet(u);
         if (responseText.equals("")){
             return null;
         }
         UUIDResponse response = gson.fromJson(responseText, UUIDResponse.class);
-        UUID uuid = UUID.fromString(response.id.replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
-        return new Profile(uuid, response.name);
+        return Profile.fromResponse(response);
     }
 
     public static Profile getOfflineUUID(String name){

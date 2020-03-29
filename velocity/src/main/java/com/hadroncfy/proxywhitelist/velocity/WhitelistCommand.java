@@ -26,8 +26,8 @@ public class WhitelistCommand implements Command {
         return wl.getWhitelistCommand().doCompletion(currentArgs);
     }
     
-    // @Override
-    // public boolean hasPermission(CommandSource source, String @NonNull [] args) {
-    //     return source.hasPermission("bungeewhitelist.use");
-    // }
+    @Override
+    public boolean hasPermission(CommandSource source, String @NonNull [] args) {
+        return source.hasPermission("bungeewhitelist.use");
+    }
 }

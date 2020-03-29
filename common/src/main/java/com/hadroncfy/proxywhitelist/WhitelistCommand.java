@@ -3,22 +3,13 @@ package com.hadroncfy.proxywhitelist;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WhitelistCommand {
     private Whitelist whitelist;
 
     WhitelistCommand(Whitelist w){
         whitelist = w;
-    }
-
-    private static List<String> filterStart(List<String> l, String prefix){
-        List<String> ret = new ArrayList<>();
-        for (String s: l){
-            if (s.startsWith(prefix)){
-                ret.add(s);
-            }
-        }
-        return ret;
     }
 
     public List<String> doCompletion(String[] args) {
@@ -31,12 +22,15 @@ public class WhitelistCommand {
             ret.add("remove");
             ret.add("add");
             if (args.length == 1){
-                ret = filterStart(ret, args[0]);
+                ret = ret.stream().filter(c -> c.startsWith(args[0])).collect(Collectors.toList());
             }
         }
         else if (args.length == 2){
             if (args[0].equals("remove")){
-                ret = filterStart(whitelist.getPlayers(), args[1]);
+                ret = whitelist.getPlayers().stream()
+                    .filter(p -> p.name.startsWith(args[1]))
+                    .map(p -> p.name)
+                    .collect(Collectors.toList());
             }
         }
 
@@ -59,12 +53,12 @@ public class WhitelistCommand {
                 ctx.broadcast(sender, "Reloaded white list");
                 return;
             } else if (args[0].equals("list")) {
-                List<String> players = whitelist.getPlayers();
+                List<Profile> players = whitelist.getPlayers();
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < players.size(); i++) {
                     if (i > 0)
                         sb.append(", ");
-                    sb.append(players.get(i));
+                    sb.append(players.get(i).name);
                 }
                 if (players.size() == 0) {
                     sender.sendResultMessage("There're no players in the white list.");

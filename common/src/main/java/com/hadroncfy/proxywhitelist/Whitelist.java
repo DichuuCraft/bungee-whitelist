@@ -5,7 +5,6 @@ import java.util.Map;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -13,17 +12,19 @@ import com.google.gson.GsonBuilder;
 
 
 public class Whitelist {
-    private Map<UUID, String> whitelist = new HashMap<>();
+    private WhitelistStorage whitelist = new WhitelistStorage();
     private Config config = new Config();
-    private Gson gson;
+    private final Gson gson = new GsonBuilder()
+        .registerTypeAdapter(WhitelistStorage.class, WhitelistSerializer.getInstance())
+        .registerTypeAdapter(UUID.class, UUIDTypeAdapter.getInstance())
+        .setPrettyPrinting().create();
 
     private File dataPath;
 
     private IPlugin ctx;
-    private WhitelistCommand wcmd = new WhitelistCommand(this);
+    private final WhitelistCommand wcmd = new WhitelistCommand(this);
 
     public Whitelist(IPlugin plugin){
-        gson = new GsonBuilder().setPrettyPrinting().create();
         ctx = plugin;
     }
 
@@ -45,8 +46,8 @@ public class Whitelist {
         String name = player.getName();
         if (config.enabled){
             if (whitelist.get(uuid) != null){
-                if (!whitelist.get(uuid).equals(name)){
-                    whitelist.put(uuid, name);
+                if (!whitelist.get(uuid).name.equals(name)){
+                    whitelist.get(uuid).name = name;
                     saveWhitelist();
                 }
             }
@@ -68,11 +69,7 @@ public class Whitelist {
         }
         String content = Util.readFileSync(whitelistFile, ctx.logger());
         if (content != null){
-            // Gson gson = new Gson();
-            whitelist.clear();
-            for (WhitelistEntry entry: gson.fromJson(content, WhitelistEntry[].class)){
-                whitelist.put(UUID.fromString(entry.uuid), entry.name);
-            }
+            whitelist = gson.fromJson(content, WhitelistStorage.class);
             ctx.logger().info("Loaded white list");
             return true;
         }
@@ -84,15 +81,17 @@ public class Whitelist {
 
     private boolean saveWhitelist(){
         File whitelistFile = getWhitelistFile();
-        List<WhitelistEntry> wl = new ArrayList<>();
-        for (Map.Entry<UUID, String> entry: whitelist.entrySet()){
-            wl.add(new WhitelistEntry(entry.getKey().toString(), entry.getValue()));
-        }
-        return Util.writeFileSync(whitelistFile, gson.toJson(wl), ctx.logger());
+        return Util.writeFileSync(whitelistFile, gson.toJson(whitelist), ctx.logger());
     }
 
     public void update(UUID uuid, String name){
-        whitelist.put(uuid, name);
+        Profile f = whitelist.get(uuid);
+        if (f != null){
+            f.name = name;
+        }
+        else {
+            whitelist.put(new Profile(uuid, name));
+        }
         saveWhitelist();
     }
 
@@ -101,17 +100,15 @@ public class Whitelist {
         saveWhitelist();
     }
 
-	public List<String> getPlayers() {
-        List<String> ret = new ArrayList<>();
-        for (Map.Entry<UUID, String> entry: whitelist.entrySet()){
-            ret.add(entry.getValue());
-        }
+	public List<Profile> getPlayers() {
+        List<Profile> ret = new ArrayList<>();
+        whitelist.forEach((id, p) -> ret.add(p));
 		return ret;
 	}
     
     private UUID getUUID(String name){
-        for (Map.Entry<UUID, String> entry: whitelist.entrySet()){
-            if (entry.getValue().equalsIgnoreCase(name)){
+        for (Map.Entry<UUID, Profile> entry: whitelist.entrySet()){
+            if (entry.getValue().name.equalsIgnoreCase(name)){
                 return entry.getKey();
             }
         }

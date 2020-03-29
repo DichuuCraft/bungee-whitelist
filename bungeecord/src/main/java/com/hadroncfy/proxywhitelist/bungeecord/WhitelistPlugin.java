@@ -51,9 +51,7 @@ public class WhitelistPlugin extends Plugin implements IPlugin, Listener {
         TextComponent ret = new TextComponent(msg);
         ret.setItalic(true);
         ret.setColor(ChatColor.DARK_RED);
-        for (ProxiedPlayer player: getProxy().getPlayers()){
-            player.sendMessage(ret);
-        }
+        getProxy().broadcast(ret);
     }
 
     @EventHandler

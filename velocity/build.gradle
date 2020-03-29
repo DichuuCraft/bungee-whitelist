@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     implementation project(':common')
-    implementation 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    compileOnly 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
     implementation 'com.google.code.gson:gson:2.8.6'
     annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
 }
@@ -21,4 +21,8 @@ dependencies {
 shadowJar {
     archiveBaseName = 'velocity-whitelist'
     destinationDirectory = file('out/')
+}
+
+artifacts {
+    archives shadowJar
 }

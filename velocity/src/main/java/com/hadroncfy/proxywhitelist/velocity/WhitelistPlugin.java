@@ -15,9 +15,9 @@ import com.hadroncfy.proxywhitelist.Whitelist;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
-import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.slf4j.Logger;
@@ -59,6 +59,11 @@ public class WhitelistPlugin implements IPlugin {
     }
 
     @Subscribe
+    public void onProxyReloaded(ProxyReloadEvent e){
+        whitelist.init();
+    }
+
+    @Subscribe
     public void onLoginEvent(LoginEvent l) {
         whitelist.checkPlayerJoin(new PlayerWrapper(l.getPlayer()));
     }
@@ -77,9 +82,7 @@ public class WhitelistPlugin implements IPlugin {
     public void broadcast(ICommandSender sender, String msg) {
         msg = "[" + sender.getLabel() + ": " + msg + "]";
         TextComponent tc = TextComponent.of(msg).color(TextColor.DARK_RED).decoration(TextDecoration.ITALIC, true);
-        for (Player p: server.getAllPlayers()){
-            p.sendMessage(tc);
-        }
+        server.broadcast(tc);
         logger.info(msg);
     }
 

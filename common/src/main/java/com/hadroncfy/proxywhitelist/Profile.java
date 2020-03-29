@@ -9,4 +9,8 @@ public class Profile {
         this.uuid = uuid;
         this.name = name;
     }
+
+    public static Profile fromResponse(UUIDResponse r){
+        return new Profile(r.id, r.name);
+    }
 }

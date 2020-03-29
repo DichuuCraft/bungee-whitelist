@@ -10,11 +10,15 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.md-5:bungeecord-api:1.14-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-api:1.14-SNAPSHOT'
     implementation project(':common')
 }
 
 shadowJar {
     archiveBaseName = rootProject.name
     destinationDirectory = file('out/')
+}
+
+artifacts {
+    archives shadowJar
 }
