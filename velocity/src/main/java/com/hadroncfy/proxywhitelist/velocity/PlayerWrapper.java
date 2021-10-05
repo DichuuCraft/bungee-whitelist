@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.hadroncfy.proxywhitelist.IPlayer;
 import com.velocitypowered.api.proxy.Player;
 
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.Component;
 
 public class PlayerWrapper implements IPlayer {
     private Player p;
@@ -16,7 +16,7 @@ public class PlayerWrapper implements IPlayer {
 
     @Override
     public void sendResultMessage(String msg) {
-        p.sendMessage(TextComponent.of(msg));
+        p.sendMessage(Component.text(msg));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class PlayerWrapper implements IPlayer {
 
     @Override
     public void disconnect(String msg) {
-        p.disconnect(TextComponent.of(msg));
+        p.disconnect(Component.text(msg));
     }
     
 }

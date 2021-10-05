@@ -3,19 +3,22 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
 repositories {
     jcenter()
     maven {
         name 'velocity'
-        url 'https://repo.velocitypowered.com/snapshots/'
+        url 'https://nexus.velocitypowered.com/repository/maven-public/'
     }
 }
 
 dependencies {
     implementation project(':common')
-    compileOnly 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    compileOnly 'com.velocitypowered:velocity-api:3.0.0'
     implementation 'com.google.code.gson:gson:2.8.6'
-    annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:3.0.0'
 }
 
 shadowJar {

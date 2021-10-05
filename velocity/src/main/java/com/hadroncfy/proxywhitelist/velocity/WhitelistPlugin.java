@@ -18,13 +18,14 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.slf4j.Logger;
 
-import net.kyori.text.TextComponent;
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 @Plugin(id = "bungee-whitelist", name = "bungee-whitelist", version = "1.0", description = "Whitelist plugin for BungeeCord and Velocity", authors = {
         "hadroncfy" })
@@ -55,7 +56,7 @@ public class WhitelistPlugin implements IPlugin {
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent e) {
         whitelist.init();
-        server.getCommandManager().register(new WhitelistCommand(whitelist), "vwhitelist");
+        server.getCommandManager().register("vwhitelist", new WhitelistCommand(whitelist));
     }
 
     @Subscribe
@@ -81,8 +82,10 @@ public class WhitelistPlugin implements IPlugin {
     @Override
     public void broadcast(ICommandSender sender, String msg) {
         msg = "[" + sender.getLabel() + ": " + msg + "]";
-        TextComponent tc = TextComponent.of(msg).color(TextColor.DARK_RED).decoration(TextDecoration.ITALIC, true);
-        server.broadcast(tc);
+        var tc = Component.text(msg).color(NamedTextColor.DARK_RED).decoration(TextDecoration.ITALIC, true);
+        for (Player player: server.getAllPlayers()) {
+            player.sendMessage(tc);
+        }
         logger.info(msg);
     }
 
